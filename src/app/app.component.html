@@ -1,0 +1,23 @@
+<!-- Q2) Placer la balise de votre composant TodoList ici -->
+<app-todo-list></app-todo-list>
+<!-- Q1) Pour tester rapidement >
+<h1>Liste de choses à faire PWA - TP3  (debug)</h1>
+<form (ngSubmit)="append(newLabel.value)">
+  <input #newLabel />
+</form>
+
+<ul *ngIf="obsTodoList | async as TDL">
+  <li *ngFor="let item of TDL.items">
+    <input type="checkbox"
+           [ngModel]="item.isDone"
+           (ngModelChange)="updateItem(item, {isDone: $event})" />
+    <form (ngSubmit)="updateItem(item, {label: labItem.value})">
+      <input [ngModel]="item.label" #labItem name="toto" />
+    </form>
+    <button (click)="delete(item)">DELETE</button>
+  </li>
+</ul>
+
+<pre *ngIf="obsTodoList|async as TDL">
+  {{ TDL|json }}
+</pre-->
