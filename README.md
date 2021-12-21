@@ -10,6 +10,8 @@
 
 ## Fonctionnalités
 
+- Filtres : Tous, Actifs, Complétés
+- Supprimer cochés
 - Undo / Redo
-- 
-- 
+- Sauvegarde local
+- Effacer tout

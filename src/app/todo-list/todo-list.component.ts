@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
-import { State } from '../dataTypes/State';
-import { TodoItemData } from '../dataTypes/TodoItemData';
-import { TodoListData } from '../dataTypes/TodoListData';
+import { State } from '../classesUtils/State';
+import { TodoItemData } from '../classesUtils/TodoItemData';
+import { TodoListData } from '../classesUtils/TodoListData';
 import { TodolistService } from '../todolist.service';
 
 @Component({
@@ -10,28 +10,30 @@ import { TodolistService } from '../todolist.service';
   styleUrls: ['./todo-list.component.scss'],
 })
 export class TodoListComponent implements OnInit {
-  @ViewChild('searchKey', { static: false })
-  searchKey!: ElementRef;
   @Input()
   public data!: TodoListData;
 
+  //Variables
   private titre: string;
+  //Utilisisation d'un énumérable pour l'état, All par défaut
   public state = State;
   private filter: State = State.all;
-
   
-  private compteurRetour: number = 0;
+  //Gestion de l'historique
+  private redoCount: number = 0;
   private dataHistory: TodoListData[] = [];
-  private bloquerHistorique: boolean = false;
+  private isHistoryBlocked: boolean = false;
 
   constructor(private TDLS: TodolistService) {
+    //Récupération du label de localstorage
     this.titre = TDLS.getLabelName();
+    //Chargement des données
     this.chargeLocalDonnees();
 
     TDLS.getTodoListDataObservable().subscribe(
       tdl => {
         this.data = tdl;
-        // Pour chaque changement on sauvegarde la liste locale
+        //On sauvegarde la liste à chaque changement
         this.sauvegardeLocale();
       }
     );
@@ -40,12 +42,21 @@ export class TodoListComponent implements OnInit {
   ngOnInit() {
   }
 
+  get label(): string {
+    return this.data.label;
+  }
+
+  get items(): TodoItemData[] {
+    return this.data.items;
+  }
+
   appendItem(label: string, isDone = false, auto = false): void {
     if (label != "") {
       if (!auto) {
-        // Réinitialisation du compteur historique 
-        this.compteurRetour = 0;
+        //Réinitialisation du compteur de l'historique 
+        this.redoCount = 0;
       }
+      //Ajout de l'item à la liste
       this.TDLS.appendItems(
         {
           label, isDone
@@ -65,12 +76,8 @@ export class TodoListComponent implements OnInit {
     this.TDLS.removeItems(item);
   }
 
-  get label(): string {
-    return this.data.label;
-  }
-
-  get items(): TodoItemData[] {
-    return this.data.items;
+  compteurItems(): number {
+    return (this.items.length - this.items.filter(item => item.isDone).length);
   }
 
   isAllDone(): boolean {
@@ -82,17 +89,13 @@ export class TodoListComponent implements OnInit {
     this.TDLS.setItemsDone(done, ...this.items);
   }
 
-  compteurItems(): number {
-    return (this.items.length - this.items.filter(item => item.isDone).length);
-  }
-
   setFiltre(value: any) {
     this.filter = value;
   }
   
   estItemAffiche(item: { isDone: boolean; }) {
     if ((this.filter === State.all) ||
-      (this.filter === State.actived && !item.isDone) ||
+      (this.filter === State.todo && !item.isDone) ||
       (this.filter === State.completed && item.isDone)) {
       return true;
     }
@@ -111,40 +114,40 @@ export class TodoListComponent implements OnInit {
   }
 
   supprimeItemCoches() {
-    // On récupère la liste des items cochés et on boucle dans un foreach pour supprimer chaque item
+    //On récupère la liste des items cochés et on boucle dans un foreach pour supprimer chaque item
     this.items.filter(x => x.isDone).forEach(item => {
       this.removeItem(item);
     });
   }
 
   supprimeTousItems() {
-    // On récupère la liste des items et on boucle dans un foreach pour supprimer chaque item
+    //On récupère la liste des items et on boucle dans un foreach pour supprimer chaque item
     this.items.forEach(item => {
       this.removeItem(item);
     });
   }
 
   isAnnuler() {
-    return this.dataHistory.length > this.compteurRetour + 1;
+    return this.dataHistory.length > this.redoCount + 1;
   }
 
   isRefaire() {
-    return this.compteurRetour > 0;
+    return this.redoCount > 0;
   }
 
   annulerRefaireItems(isAnnuler: boolean) {
-    this.bloquerHistorique = true;
-    this.compteurRetour = isAnnuler ? this.compteurRetour + 1 : this.compteurRetour - 1;
-    var dataModifie = this.dataHistory[this.dataHistory.length - 1 - this.compteurRetour];
+    this.isHistoryBlocked = true;
+    this.redoCount = isAnnuler ? this.redoCount + 1 : this.redoCount - 1;
+    var dataModifie = this.dataHistory[this.dataHistory.length - 1 - this.redoCount];
     this.supprimeTousItems();
     this.appendItemsByData(dataModifie.items);
-    this.bloquerHistorique = false;
+    this.isHistoryBlocked = false;
   }
 
   sauvegardeLocale() {
     localStorage.setItem(this.label, JSON.stringify(this.items));
-    // On ne sauvegarde pas si on est dans un "refaire" ou "annuler" 
-    if (!this.bloquerHistorique) {
+    //On ne sauvegarde pas si on undo / redo 
+    if (!this.isHistoryBlocked) {
       this.dataHistory.push(this.data);
     }
   }
@@ -152,7 +155,7 @@ export class TodoListComponent implements OnInit {
   remiseAZeroHistorique() {
     this.dataHistory = [];
     this.sauvegardeLocale();
-    this.compteurRetour = 0;
+    this.redoCount = 0;
   }
 
   chargeLocalDonnees() {
@@ -168,10 +171,6 @@ export class TodoListComponent implements OnInit {
       datas.forEach(x => this.appendItem(x.label, x.isDone, true));
     }
   }
-
-
-
-
 
 /*
   get obsTodoList(): Observable<TodoList> {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { TodoItemData } from './dataTypes/TodoItemData';
-import { TodoListData } from './dataTypes/TodoListData';
+import { TodoItemData } from './classesUtils/TodoItemData';
+import { TodoListData } from './classesUtils/TodoListData';
 
 export interface TodoItem {
   readonly label: string;
@@ -29,8 +29,8 @@ export class TodolistService {
   private todoListSubject = new BehaviorSubject<TodoListData>({ label: this.labelName, items: []} );
 
   constructor() {
-    this.managePersistency();
-    this.manageUndoRedo();
+    //this.managePersistency();
+    //this.manageUndoRedo();
   }
 
   getLabelName(): string {
@@ -72,7 +72,7 @@ export class TodolistService {
       items: tdl.items.filter( I => items.indexOf(I) === -1 )
     });
   }
-
+/*
   append(...labels: Readonly<string[]>): this {
     const L: TodoList = this.subj.getValue();
     this.subj.next( {
@@ -159,6 +159,7 @@ export class TodolistService {
       }
     } );
   }
+  */
 }
 
 export function tdlToString(tdl: TodoList): string {

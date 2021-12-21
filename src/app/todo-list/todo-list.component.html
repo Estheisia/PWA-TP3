@@ -28,21 +28,21 @@
       </li>
     </ul>
   </section>
-  <footer class="footer">
+  <footer *ngIf="items.length > 0">
     <div class="footer">
       <span class="todo-count"><strong>{{compteurItems()}}</strong> restant(s)</span>
       <ul class="filters">
         <li><a class="filterAll" (click)="setFiltre(state.all)" [class.selected]="checkState(state.all)">Tous</a></li>
-        <li><a class="filterActives" (click)="setFiltre(state.actived)" [class.selected]="checkState(state.actived)">Actifs</a></li>
+        <li><a class="filterActives" (click)="setFiltre(state.todo)" [class.selected]="checkState(state.todo)">Actifs</a></li>
         <li><a class="filterCompleted" (click)="setFiltre(state.completed)" [class.selected]="checkState(state.completed)">Complétés</a></li>
       </ul>
-      <button class="clear-completed" [hidden]="!isItemCoches()" (click)="supprimeItemCoches()">Supprimer cochées</button>
+      <button class="clear-completed" [hidden]="!isItemCoches()" (click)="supprimeItemCoches()">Supprimer cochés</button>
     </div>
     <div class="footer">
       <ul class="filters">
         <li><a [class.bloquer]="!isAnnuler()" (click)="annulerRefaireItems(true)">Annuler</a></li>
         <li><a [class.bloquer]="!isRefaire()" (click)="annulerRefaireItems(false)">Refaire</a></li>
-        <li><a class="" (click)="supprimerLocalStorage()">Effacer storage</a></li>
+        <li><a (click)="supprimerLocalStorage()">Effacer storage</a></li>
       </ul>
       <button class="clear-completed" (click)="supprimeTousItems()">Tout effacer</button>
     </div>

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Input, ElementRef } from '@angular/core';
-import { TodoItemData } from '../dataTypes/TodoItemData';
+import { TodoItemData } from '../classesUtils/TodoItemData';
 import { TodolistService } from '../todolist.service';
 
 @Component({
@@ -19,6 +19,14 @@ export class TodoItemComponent implements OnInit {
   ngOnInit() {
   }
 
+  get label(): string {
+    return this.data.label;
+  }
+
+  set label(lab: string) {
+    this.TDLS.setItemsLabel(lab, this.data);
+  }
+
   get editionMode(): boolean {
     return this._isEditing;
   }
@@ -26,14 +34,6 @@ export class TodoItemComponent implements OnInit {
   set editionMode(e: boolean) {
     this._isEditing = e;
     requestAnimationFrame(() => this.inputLabel.nativeElement.focus());
-  }
-
-  get label(): string {
-    return this.data.label;
-  }
-
-  set label(lab: string) {
-    this.TDLS.setItemsLabel(lab, this.data);
   }
 
   get isDone(): boolean {

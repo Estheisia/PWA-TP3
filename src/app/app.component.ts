@@ -11,7 +11,7 @@ import { TodoItem, TodoList, TodolistService } from './todolist.service';
 export class AppComponent {
 
   constructor(private TDLS: TodolistService) { }
-  
+  /*
   get obsTodoList(): Observable<TodoList> {
     return this.TDLS.observable;
   }
@@ -26,4 +26,5 @@ export class AppComponent {
   delete(item: TodoItem): void {
     this.TDLS.remove(item);
   }
+  */
 }
