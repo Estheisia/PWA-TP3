@@ -18,7 +18,7 @@
            [ngModel]="isAllDone()"
            (ngModelChange)="toggleAllDone()"
     />
-    <label for="toggleAll"></label>
+    <label for="toggleAll" (click)="toggleAllDone()"></label>
     <ul class="todo-list">
       <li *ngFor="let item of items"
           [class.completed]="item.isDone"

@@ -1,4 +1,4 @@
-//Trois états : Tous, à faire et complété
+//Trois états pour les filtres : Tous, à faire et complété
 export enum State {
   all,
   todo,

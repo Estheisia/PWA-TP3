@@ -42,6 +42,7 @@ export class TodoListComponent implements OnInit {
   ngOnInit() {
   }
 
+  //Getter et Setter des paramètres de la liste
   get label(): string {
     return this.data.label;
   }
@@ -50,6 +51,19 @@ export class TodoListComponent implements OnInit {
     return this.data.items;
   }
 
+  setFiltre(value: any) {
+    this.filter = value;
+  }
+
+  setItemDone(item: TodoItemData, done: boolean): void {
+    this.TDLS.setItemsDone(done, item);
+  }
+
+  itemLabel(item: TodoItemData, label: string): void {
+    this.TDLS.setItemsLabel(label, item);
+  }
+
+  //Ajoute un item dans la liste
   appendItem(label: string, isDone = false, auto = false): void {
     if (label != "") {
       if (!auto) {
@@ -64,35 +78,28 @@ export class TodoListComponent implements OnInit {
     }
   }
 
-  setItemDone(item: TodoItemData, done: boolean): void {
-    this.TDLS.setItemsDone(done, item);
-  }
-
-  itemLabel(item: TodoItemData, label: string): void {
-    this.TDLS.setItemsLabel(label, item);
-  }
-
+  //Supprime un item
   removeItem(item: TodoItemData): void {
     this.TDLS.removeItems(item);
   }
 
+  //Renvoie le nombre d'items
   compteurItems(): number {
     return (this.items.length - this.items.filter(item => item.isDone).length);
   }
 
+  //Renvoie un booléen suivant si tous les items sont cochés
   isAllDone(): boolean {
     return this.items.every(it => it.isDone);
   }
 
+  //Coche tous les items
   toggleAllDone() {
     const done = !this.isAllDone();
     this.TDLS.setItemsDone(done, ...this.items);
   }
-
-  setFiltre(value: any) {
-    this.filter = value;
-  }
   
+  //Vérifie un item est affiché
   estItemAffiche(item: { isDone: boolean; }) {
     if ((this.filter === State.all) ||
       (this.filter === State.todo && !item.isDone) ||
@@ -127,10 +134,10 @@ export class TodoListComponent implements OnInit {
     });
   }
 
+  //Vérifie si on peut logiquement annuler ou refaire
   isAnnuler() {
     return this.dataHistory.length > this.redoCount + 1;
   }
-
   isRefaire() {
     return this.redoCount > 0;
   }
@@ -171,23 +178,5 @@ export class TodoListComponent implements OnInit {
       datas.forEach(x => this.appendItem(x.label, x.isDone, true));
     }
   }
-
-/*
-  get obsTodoList(): Observable<TodoList> {
-    return this.TDLS.observable;
-  }
-  
-  append(label: string, champ: any): void {
-    this.TDLS.append(label);
-    champ.champTexte = "";
-  }
-  updateItem(item: TodoItem, u: Partial<TodoItem>): void {
-    this.TDLS.update(u, item);
-  }
-
-  delete(item: TodoItem): void {
-    this.TDLS.remove(item);
-  }
-*/
 }
 

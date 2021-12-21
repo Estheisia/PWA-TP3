@@ -19,6 +19,7 @@ export class TodoItemComponent implements OnInit {
   ngOnInit() {
   }
 
+  //Getter et Setter des paramètres des items
   get label(): string {
     return this.data.label;
   }
@@ -44,6 +45,7 @@ export class TodoItemComponent implements OnInit {
     this.TDLS.setItemsDone(done, this.data);
   }
 
+  //Suppression de l'item
   destroy() {
     this.TDLS.removeItems(this.data);
   }
