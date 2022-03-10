@@ -38,7 +38,7 @@ Les boutons sont désactivés lorsque leur utilisation est logiquement impossibl
 
 ### Sauvegarde local
 
-La liste est stockée localement dans un JSON, qui permet d'avoir une trace en cas de déconnection.
+La liste est stockée localement dans un JSON, qui permet d'avoir une trace en cas de déconnexion.
 Un bouton permet de supprimer la liste sauvegardée, il suffit de recharger la page pour vérifier.
 
 ### Effacer tout
